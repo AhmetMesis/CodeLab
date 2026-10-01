@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String
+  icon        String
+  topics      Topic[]
+}
+
+model Topic {
+  id              Int            @id @default(autoincrement())
+  categoryId      Int
+  category        Category       @relation(fields: [categoryId], references: [id])
+  title           String
+  description     String
+  difficulty      String
+  order           Int
+  content         String
+  codeExample     String
+  codeExplanation String
+  quizzes         Quiz[]
+  progress        UserProgress[]
+}
+
+model Quiz {
+  id           Int    @id @default(autoincrement())
+  topicId      Int
+  topic        Topic  @relation(fields: [topicId], references: [id])
+  question     String
+  codeSnippet  String
+  optionA      String
+  optionB      String
+  optionC      String
+  optionD      String
+  correctIndex Int
+  explanation  String
+}
+
+model UserProgress {
+  id        Int     @id @default(autoincrement())
+  topicId   Int     @unique
+  topic     Topic   @relation(fields: [topicId], references: [id])
+  completed Boolean @default(false)
+  score     Int     @default(0)
+}
